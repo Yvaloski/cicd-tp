@@ -5,8 +5,8 @@ module.exports = {
     jest: true,
   },
   files: ["**/*.js"],
-  plugins: { js },
-  extends: ["js/recommended"],
+  plugins: ["@eslint/js"],
+  extends: ["@eslint/js/recommended"],
   rules: {
     "no-unused-vars": "warn",
     "prefer-const": "error",
