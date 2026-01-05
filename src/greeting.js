@@ -1,5 +1,5 @@
 function getGreeting(name) {
-  const greeting = `Hello world!`;
+  const greeting = `Hello world of dev!`;
 
   if (name) {
     const wisher = `From ${name}`;
