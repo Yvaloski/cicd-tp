@@ -8,7 +8,7 @@ async function fetchJokeFromAPI() {
       return {
         joke: `${data.blague} ${data.reponse}`,
         source: 'api',
-        category: 'beauf' // Cette API ne fournit qu'un seul type
+        category: 'beauf'
       };
     }
     throw new Error('Blague invalide reçue de l\'API');

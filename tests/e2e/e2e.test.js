@@ -1,6 +1,5 @@
 const axios = require("axios");
 const app = require("../../src/server");
-const { predefinedJokes } = require("../../src/greeting");
 let server;
 let baseURL;
 
@@ -34,7 +33,6 @@ describe("E2E GET /hello", () => {
     expect(res.status).toBe(200);
     expect(res.data).toHaveProperty("message");
     expect(res.data).toHaveProperty("joke");
-    expect(predefinedJokes).toContain(res.data.joke);
   });
 
   it("handles server errors gracefully", async () => {
@@ -57,13 +55,13 @@ describe("E2E POST /hello", () => {
 });
 
 describe("E2E GET /joke", () => {
-  it("responds with a random joke", async () => {
+  it("responds with a random joke from API", async () => {
     const res = await axios.get(`${baseURL}/joke`);
     expect(res.status).toBe(200);
     expect(res.data).toHaveProperty("joke");
     expect(res.data).toHaveProperty("type");
     expect(res.data).toHaveProperty("timestamp");
-    expect(predefinedJokes).toContain(res.data.joke);
+    expect(res.data).toHaveProperty("source", "api");
   });
 
   it("responds with different jokes on multiple calls", async () => {

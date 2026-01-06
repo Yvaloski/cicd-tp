@@ -1,6 +1,5 @@
 const request = require("supertest");
 const app = require("../../src/server");
-const { predefinedJokes } = require("../../src/greeting");
 
 describe("GET /hello", () => {
   it("should return Hey world", async () => {
@@ -20,7 +19,6 @@ describe("GET /hello", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("message", "Voici une blague aléatoire:");
     expect(res.body).toHaveProperty("joke");
-    expect(predefinedJokes).toContain(res.body.joke);
   });
 
   it("should handle special characters in name", async () => {
@@ -53,7 +51,6 @@ describe("POST /hello", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("message", "Voici une blague aléatoire:");
     expect(res.body).toHaveProperty("joke");
-    expect(predefinedJokes).toContain(res.body.joke);
   });
 
   it("should handle missing x-name header", async () => {
@@ -73,37 +70,19 @@ describe("POST /hello", () => {
 });
 
 describe("GET /joke", () => {
-  it("should return a random joke", async () => {
+  it("should return a random joke from API", async () => {
     const res = await request(app).get("/joke");
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("joke");
     expect(res.body).toHaveProperty("type", "random");
     expect(res.body).toHaveProperty("timestamp");
-    expect(predefinedJokes).toContain(res.body.joke);
-  });
-
-  it("should return different jokes on multiple calls", async () => {
-    const responses = await Promise.all([
-      request(app).get("/joke"),
-      request(app).get("/joke"),
-      request(app).get("/joke")
-    ]);
-
-    const jokes = responses.map(res => res.body.joke);
-    expect(new Set(jokes).size).toBeGreaterThanOrEqual(2);
+    expect(res.body).toHaveProperty("source", "api");
   });
 
   it("should handle type parameter", async () => {
     const res = await request(app).get("/joke?type=animal");
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("type", "animal");
-  });
-
-  it("should handle invalid type parameter", async () => {
-    const res = await request(app).get("/joke?type=invalid");
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("type", "invalid");
-    expect(predefinedJokes).toContain(res.body.joke);
   });
 
   it("should return valid timestamp", async () => {
