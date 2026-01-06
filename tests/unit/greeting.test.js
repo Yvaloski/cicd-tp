@@ -22,6 +22,22 @@ describe("getGreeting", () => {
     expect(result).toHaveProperty("joke");
     expect(predefinedJokes).toContain(result.joke);
   });
+
+  it("handles empty string name", () => {
+    expect(getGreeting("")).toBe("Hey world!");
+  });
+
+  it("handles null name", () => {
+    expect(getGreeting(null)).toBe("Hey world!");
+  });
+
+  it("handles undefined name", () => {
+    expect(getGreeting(undefined)).toBe("Hey world!");
+  });
+
+  it("handles name with only spaces", () => {
+    expect(getGreeting("   ")).toBe("Hey world!");
+  });
 });
 
 describe("getRandomJoke", () => {
@@ -37,6 +53,12 @@ describe("getRandomJoke", () => {
     // With 30 jokes, probability of all 3 being same is very low
     expect([joke1, joke2, joke3]).not.toEqual([joke1, joke1, joke1]);
   });
+
+  it("always returns a string", () => {
+    const joke = getRandomJoke();
+    expect(typeof joke).toBe("string");
+    expect(joke.length).toBeGreaterThan(0);
+  });
 });
 
 describe("predefinedJokes", () => {
@@ -48,6 +70,18 @@ describe("predefinedJokes", () => {
     predefinedJokes.forEach(joke => {
       expect(typeof joke).toBe("string");
       expect(joke.length).toBeGreaterThan(0);
+    });
+  });
+
+  it("contains no duplicate jokes", () => {
+    const uniqueJokes = new Set(predefinedJokes);
+    expect(uniqueJokes.size).toBe(predefinedJokes.length);
+  });
+
+  it("all jokes contain proper punctuation", () => {
+    predefinedJokes.forEach(joke => {
+      // Each joke should end with proper punctuation
+      expect(joke.endsWith('!') || joke.endsWith('?') || joke.endsWith('.')).toBe(true);
     });
   });
 });

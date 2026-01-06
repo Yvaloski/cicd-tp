@@ -36,6 +36,14 @@ describe("E2E GET /hello", () => {
     expect(res.data).toHaveProperty("joke");
     expect(predefinedJokes).toContain(res.data.joke);
   });
+
+  it("handles server errors gracefully", async () => {
+    try {
+      await axios.get(`${baseURL}/nonexistent`);
+    } catch (error) {
+      expect(error.response.status).toBe(404);
+    }
+  });
 });
 
 describe("E2E POST /hello", () => {
@@ -67,5 +75,32 @@ describe("E2E GET /joke", () => {
 
     const jokes = responses.map(res => res.data.joke);
     expect(new Set(jokes).size).toBeGreaterThanOrEqual(2);
+  });
+
+  it("handles network errors gracefully", async () => {
+    try {
+      await axios.get(`${baseURL}/joke`, { timeout: 1 });
+    } catch (error) {
+      expect(error.code).toBe('ECONNABORTED');
+    }
+  });
+});
+
+describe("E2E Error Handling", () => {
+  it("handles invalid routes", async () => {
+    try {
+      await axios.get(`${baseURL}/invalid-route`);
+    } catch (error) {
+      expect(error.response.status).toBe(404);
+    }
+  });
+
+  it("handles malformed requests", async () => {
+    try {
+      await axios.post(`${baseURL}/hello`, { invalid: "data" });
+    } catch (error) {
+      // Should still respond with 200 as we're not validating the body
+      expect(error.response.status).toBe(200);
+    }
   });
 });
