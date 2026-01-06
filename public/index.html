@@ -195,6 +195,17 @@
             font-weight: 500;
         }
 
+        .source-badge {
+            display: inline-block;
+            background: #e0e0e0;
+            color: #555;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
         @media (max-width: 600px) {
             h1 {
                 font-size: 2rem;
@@ -303,14 +314,15 @@
         }
 
         // Afficher une blague
-        function displayJoke(joke, category) {
+        function displayJoke(joke, category, source = 'local') {
             // Réinitialiser l'animation en supprimant et ajoutant la classe
             jokeCard.style.animation = 'none';
             jokeCard.offsetHeight; // Déclencher un reflow
             jokeCard.style.animation = 'fadeInUp 0.6s ease forwards';
 
             jokeText.textContent = joke;
-            jokeMeta.textContent = `Catégorie: ${category} • ${new Date().toLocaleTimeString()}`;
+            jokeMeta.innerHTML = `Catégorie: ${category} • ${new Date().toLocaleTimeString()}` +
+                                `<span class="source-badge">${source === 'api' ? 'API' : 'Locale'}</span>`;
             loading.style.display = 'none';
             errorMessage.textContent = '';
         }
@@ -329,20 +341,19 @@
             errorMessage.textContent = '';
 
             try {
-                // Utilisation de l'API si disponible, sinon fallback sur les données locales
                 const response = await fetch(`/joke?type=${category}`);
                 if (response.ok) {
                     const data = await response.json();
-                    displayJoke(data.joke, category);
+                    displayJoke(data.joke, category, data.source || 'local');
                 } else {
                     // Fallback sur les données locales
                     const joke = getRandomJokeFromCategory(category);
-                    displayJoke(joke, category);
+                    displayJoke(joke, category, 'local');
                 }
             } catch (error) {
                 // En cas d'erreur réseau, utiliser les données locales
                 const joke = getRandomJokeFromCategory(category);
-                displayJoke(joke, category);
+                displayJoke(joke, category, 'local');
             }
         }
 

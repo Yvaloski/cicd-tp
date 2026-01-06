@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const { getGreeting, getRandomJoke } = require("./greeting");
+const { getGreeting, getRandomJoke, getJoke } = require("./greeting");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,13 +33,22 @@ app.post("/hello", (req, res) => {
 });
 
 // Endpoint unique pour les blagues
-app.get("/joke", (req, res) => {
-  const type = req.query.type || 'random';
-  res.json({
-    joke: getRandomJoke(),
-    type: type,
-    timestamp: new Date().toISOString()
-  });
+app.get("/joke", async (req, res) => {
+  try {
+    const type = req.query.type || 'random';
+    const joke = await getJoke();
+    res.json({
+      joke: joke,
+      type: type,
+      timestamp: new Date().toISOString(),
+      source: joke.startsWith('Comment') || joke.startsWith('Pourquoi') ? 'api' : 'predefined'
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Erreur lors de la récupération de la blague",
+      details: error.message
+    });
+  }
 });
 
 // Route pour servir l'interface web

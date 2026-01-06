@@ -36,8 +36,55 @@ const predefinedJokes = [
   "Qu'est-ce qu'un algorithme qui fait du sport ? Un algorithme qui court en O(n) !"
 ];
 
+async function fetchJokeFromAPI() {
+  try {
+    const response = await fetch('https://sv443.net/jokeapi/v2/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=twopart');
+    const data = await response.json();
+
+    // Vérifier que la blague est sûre et en anglais
+    if (data.safe && data.lang === 'en' && data.type === 'twopart') {
+      // Traduction simple (en production, utiliser une API de traduction)
+      const translatedSetup = await translateText(data.setup);
+      const translatedDelivery = await translateText(data.delivery);
+      return `${translatedSetup} ${translatedDelivery}`;
+    }
+    return null;
+  } catch (error) {
+    console.error('Erreur API:', error);
+    return null;
+  }
+}
+
+async function translateText(text) {
+  // Implémentation simplifiée - en production utiliser une vraie API de traduction
+  const translations = {
+    "What do you call": "Comment appelle-t-on",
+    "Why did the": "Pourquoi le",
+    "What's the difference between": "Quelle est la différence entre",
+    // Ajouter d'autres traductions courantes
+  };
+
+  for (const [en, fr] of Object.entries(translations)) {
+    if (text.startsWith(en)) {
+      return text.replace(en, fr);
+    }
+  }
+  return text; // Retourne le texte original si pas de traduction
+}
+
 function getRandomJoke() {
   return predefinedJokes[Math.floor(Math.random() * predefinedJokes.length)];
+}
+
+async function getJoke() {
+  // 30% de chance d'utiliser l'API, sinon utiliser les blagues prédéfinies
+  if (Math.random() < 0.3) {
+    const apiJoke = await fetchJokeFromAPI();
+    if (apiJoke) {
+      return apiJoke;
+    }
+  }
+  return getRandomJoke();
 }
 
 function getGreeting(name) {
@@ -53,5 +100,6 @@ function getGreeting(name) {
 module.exports = {
   getGreeting,
   getRandomJoke,
+  getJoke,
   predefinedJokes
 };
