@@ -8,7 +8,14 @@ function generateJoke(type = 'random') {
       const animal = animals[Math.floor(Math.random() * animals.length)];
       const actions = ['traverse', 'court', 'saute', 'nage'];
       const action = actions[Math.floor(Math.random() * actions.length)];
-      const reasons = ['pour aller chez le vétérinaire', 'pour échapper au fermier', 'parce qu\'il a vu un os', 'pour rejoindre ses amis'];
+      const reasons = [
+        'pour aller chez le vétérinaire',
+        'pour échapper au fermier',
+        'parce qu\'il a vu un os',
+        'pour rejoindre ses amis',
+        'parce qu\'il a entendu un bruit',
+        'pour attraper un papillon'
+      ];
       const reason = reasons[Math.floor(Math.random() * reasons.length)];
       return `Pourquoi le ${animal} ${action}-t-il la route ? ${reason} !`;
     },
