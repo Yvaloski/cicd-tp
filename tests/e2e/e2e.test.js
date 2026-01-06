@@ -1,5 +1,6 @@
 const axios = require("axios");
 const app = require("../../src/server");
+const { predefinedJokes } = require("../../src/greeting");
 let server;
 let baseURL;
 
@@ -22,19 +23,49 @@ describe("E2E GET /hello", () => {
     expect(res.data).toBe("Hey world!");
   });
 
-  it("responds with Hey world and a name", async () => {
+  it("responds with personalized greeting", async () => {
     const res = await axios.get(`${baseURL}/hello/Alice`);
     expect(res.status).toBe(200);
-    expect(res.data).toBe("Hey world! From Alice");
+    expect(res.data).toBe("Hey Alice! Dis \"blague\" pour une vanne !");
+  });
+
+  it("responds with a joke when requested", async () => {
+    const res = await axios.get(`${baseURL}/hello/blague`);
+    expect(res.status).toBe(200);
+    expect(res.data).toHaveProperty("message");
+    expect(res.data).toHaveProperty("joke");
+    expect(predefinedJokes).toContain(res.data.joke);
   });
 });
 
 describe("E2E POST /hello", () => {
-  it("responds with Hey world and a name from header", async () => {
+  it("responds with personalized greeting from header", async () => {
     const res = await axios.post(`${baseURL}/hello`, {}, {
       headers: { "x-name": "Bob" }
     });
     expect(res.status).toBe(200);
-    expect(res.data).toBe("Hey world! From Bob");
+    expect(res.data).toBe("Hey Bob! Dis \"blague\" pour une vanne !");
+  });
+});
+
+describe("E2E GET /joke", () => {
+  it("responds with a random joke", async () => {
+    const res = await axios.get(`${baseURL}/joke`);
+    expect(res.status).toBe(200);
+    expect(res.data).toHaveProperty("joke");
+    expect(res.data).toHaveProperty("type");
+    expect(res.data).toHaveProperty("timestamp");
+    expect(predefinedJokes).toContain(res.data.joke);
+  });
+
+  it("responds with different jokes on multiple calls", async () => {
+    const responses = await Promise.all([
+      axios.get(`${baseURL}/joke`),
+      axios.get(`${baseURL}/joke`),
+      axios.get(`${baseURL}/joke`)
+    ]);
+
+    const jokes = responses.map(res => res.data.joke);
+    expect(new Set(jokes).size).toBeGreaterThanOrEqual(2);
   });
 });
