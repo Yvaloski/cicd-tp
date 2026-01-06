@@ -1,6 +1,5 @@
 const predefinedJokes = [
   // Blagues animales
-  "Pourquoi le poulet a-t-il traversé la route ? Pour aller de l'autre côté !",
   "Que dit un poisson quand il rencontre un autre poisson ? 'Salut, ça va ?'",
   "Pourquoi les canards sont toujours de bonne humeur ? Parce qu'ils ont toujours le sourire aux lèvres !",
   "Comment appelle-t-on un chat qui fait du ski ? Un chat-pine !",
@@ -10,6 +9,7 @@ const predefinedJokes = [
   "Comment fait un chien pour traverser une rivière ? Il aboie et prend le bateau !",
   "Pourquoi les poules ne traversent-elles jamais en ligne droite ? Parce qu'elles préfèrent faire des zigzags !",
   "Qu'est-ce qu'un chat qui fait du parachutisme ? Un chat qui a les poils en l'air !",
+  "Pourquoi le poulet a-t-il traversé la route ? Pour prouver qu'il n'était pas une poule !",
 
   // Blagues nourriture
   "Pourquoi les pizzas sont-elles toujours en retard ? Parce qu'elles sont livrées à domicile !",
