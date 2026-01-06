@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blague du Jour</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        .joke-card {
+            background: white;
+            color: #333;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .joke-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .joke-text {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .joke-meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background: white;
+            color: #667eea;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .category-btn:hover {
+            background: transparent;
+            color: white;
+            border-color: white;
+        }
+
+        .category-btn.active {
+            background: #764ba2;
+            color: white;
+            border-color: #764ba2;
+        }
+
+        .footer {
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .joke-text {
+                font-size: 1.1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>😂 Blague du Jour</h1>
+        <p class="subtitle">Une dose d'humour pour égayer votre journée</p>
+
+        <div class="controls">
+            <button class="category-btn active" data-category="random">Aléatoire</button>
+            <button class="category-btn" data-category="animal">Animaux</button>
+            <button class="category-btn" data-category="food">Nourriture</button>
+            <button class="category-btn" data-category="tech">Technologie</button>
+        </div>
+
+        <div class="joke-card" id="jokeCard">
+            <div class="loading" id="loading"></div>
+            <div class="joke-text" id="jokeText">Cliquez sur un bouton pour obtenir une blague !</div>
+            <div class="joke-meta" id="jokeMeta"></div>
+        </div>
+
+        <button class="btn" id="newJokeBtn">Autre blague</button>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="footer">
+            © 2023 Blague du Jour | API v1.0
+        </div>
+    </div>
+
+    <script>
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const newJokeBtn = document.getElementById('newJokeBtn');
+        const jokeText = document.getElementById('jokeText');
+        const jokeMeta = document.getElementById('jokeMeta');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const jokeCard = document.getElementById('jokeCard');
+
+        let currentCategory = 'random';
+
+        // Catégorisation des blagues (pour le filtrage côté client)
+        const jokeCategories = {
+            animal: [
+                "Pourquoi le poulet a-t-il traversé la route ? Pour prouver qu'il n'était pas une poule !",
+                "Que dit un poisson philosophe ? 'Je pense, donc je nage'",
+                "Pourquoi les canards sont toujours de bonne humeur ? Parce qu'ils ont toujours le sourire aux lèvres !",
+                "Comment appelle-t-on un chat qui fait du ski ? Un chat-pine !",
+                "Pourquoi les vaches regardent-elles toujours vers le sud ? Parce que le nord, c'est trop loin !",
+                "Qu'est-ce qu'un lapin qui fait du vélo ? Un lapin qui roule des mécaniques !",
+                "Pourquoi les chiens n'aiment pas les ordinateurs ? Parce qu'ils préfèrent les os !",
+                "Comment fait un chien pour traverser une rivière ? Il aboie et prend le bateau !",
+                "Pourquoi les poules ne traversent-elles jamais en ligne droite ? Parce qu'elles préfèrent faire des zigzags !",
+                "Qu'est-ce qu'un chat qui fait du parachutisme ? Un chat qui a les poils en l'air !"
+            ],
+            food: [
+                "Pourquoi les pizzas sont-elles toujours en retard ? Parce qu'elles sont livrées à domicile !",
+                "Qu'est-ce qu'un burger timide ? Un burger qui rougit quand on le regarde !",
+                "Pourquoi les sushis sont-ils si calmes ? Parce qu'ils sont toujours bien roulés !",
+                "Comment appelle-t-on un croissant qui fait du sport ? Un croissant qui court !",
+                "Pourquoi les pâtes sont-elles toujours en retard ? Parce qu'elles sont toujours al dente !",
+                "Qu'est-ce qu'un taco qui fait de la musique ? Un taco qui a du son !",
+                "Pourquoi les glaces sont-elles toujours de bonne humeur ? Parce qu'elles sont toujours cool !",
+                "Comment fait un burger pour se défendre ? Il met de la moutarde !",
+                "Pourquoi les frites sont-elles toujours en groupe ? Parce qu'elles sont meilleures ensemble !",
+                "Qu'est-ce qu'une pizza qui fait du théâtre ? Une pizza qui joue la comédie !"
+            ],
+            tech: [
+                "Pourquoi le développeur a-t-il traversé la route ? Pour aller de l'autre côté (du code) !",
+                "Qu'est-ce qu'un bug qui fait du sport ? Un bug qui court en boucle !",
+                "Pourquoi JavaScript et moi on s'entend bien ? Parce qu'on a tous les deux des promesses !",
+                "Comment appelle-t-on un développeur qui fait du jardinage ? Un développeur qui plante des bugs !",
+                "Pourquoi les ordinateurs n'aiment-ils pas l'hiver ? Parce qu'ils ont peur des windows !",
+                "Qu'est-ce qu'un programmeur qui fait de la musique ? Un programmeur qui a du code !",
+                "Pourquoi les développeurs préfèrent-ils le noir ? Parce que la lumière attire les bugs !",
+                "Comment fait un développeur pour se détendre ? Il fait du debug !",
+                "Pourquoi les serveurs sont-ils toujours en retard ? Parce qu'ils ont trop de requêtes !",
+                "Qu'est-ce qu'un algorithme qui fait du sport ? Un algorithme qui court en O(n) !"
+            ]
+        };
+
+        // Sélectionner une blague aléatoire
+        function getRandomJokeFromCategory(category) {
+            if (category === 'random') {
+                const allJokes = [...jokeCategories.animal, ...jokeCategories.food, ...jokeCategories.tech];
+                return allJokes[Math.floor(Math.random() * allJokes.length)];
+            }
+            return jokeCategories[category][Math.floor(Math.random() * jokeCategories[category].length)];
+        }
+
+        // Afficher une blague
+        function displayJoke(joke, category) {
+            jokeText.textContent = joke;
+            jokeMeta.textContent = `Catégorie: ${category} • ${new Date().toLocaleTimeString()}`;
+            loading.style.display = 'none';
+            errorMessage.textContent = '';
+        }
+
+        // Afficher une erreur
+        function displayError(message) {
+            errorMessage.textContent = message;
+            loading.style.display = 'none';
+        }
+
+        // Obtenir une blague depuis l'API
+        async function fetchJoke(category) {
+            loading.style.display = 'inline-block';
+            jokeText.textContent = "Chargement de la blague...";
+            jokeMeta.textContent = '';
+            errorMessage.textContent = '';
+
+            try {
+                // Utilisation de l'API si disponible, sinon fallback sur les données locales
+                const response = await fetch(`/joke?type=${category}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displayJoke(data.joke, category);
+                } else {
+                    // Fallback sur les données locales
+                    const joke = getRandomJokeFromCategory(category);
+                    displayJoke(joke, category);
+                }
+            } catch (error) {
+                // En cas d'erreur réseau, utiliser les données locales
+                const joke = getRandomJokeFromCategory(category);
+                displayJoke(joke, category);
+            }
+        }
+
+        // Gestion des boutons de catégorie
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                currentCategory = button.dataset.category;
+                fetchJoke(currentCategory);
+            });
+        });
+
+        // Bouton pour une nouvelle blague
+        newJokeBtn.addEventListener('click', () => {
+            fetchJoke(currentCategory);
+        });
+
+        // Charger une blague aléatoire au démarrage
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchJoke('random');
+        });
+    </script>
+</body>
+</html>

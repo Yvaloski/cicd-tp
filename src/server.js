@@ -1,8 +1,12 @@
 const express = require("express");
+const path = require("path");
 const { getGreeting, getRandomJoke } = require("./greeting");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Servir les fichiers statiques
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(express.json());
 
@@ -30,17 +34,24 @@ app.post("/hello", (req, res) => {
 
 // Endpoint unique pour les blagues
 app.get("/joke", (req, res) => {
+  const type = req.query.type || 'random';
   res.json({
     joke: getRandomJoke(),
-    type: "random",
+    type: type,
     timestamp: new Date().toISOString()
   });
+});
+
+// Route pour servir l'interface web
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
     console.log(`Endpoints disponibles:`);
+    console.log(`- GET /`);
     console.log(`- GET /hello/:name?`);
     console.log(`- POST /hello`);
     console.log(`- GET /joke`);
