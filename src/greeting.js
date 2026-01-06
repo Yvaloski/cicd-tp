@@ -1,6 +1,7 @@
 const predefinedJokes = [
-  "Pourquoi le poulet a-t-il traversé la route ? Pour prouver qu'il n'était pas une poule !",
-  "Que dit un poisson philosophe ? 'Je pense, donc je nage'",
+  // Blagues animales
+  "Pourquoi le poulet a-t-il traversé la route ? Pour aller de l'autre côté !",
+  "Que dit un poisson quand il rencontre un autre poisson ? 'Salut, ça va ?'",
   "Pourquoi les canards sont toujours de bonne humeur ? Parce qu'ils ont toujours le sourire aux lèvres !",
   "Comment appelle-t-on un chat qui fait du ski ? Un chat-pine !",
   "Pourquoi les vaches regardent-elles toujours vers le sud ? Parce que le nord, c'est trop loin !",
@@ -9,6 +10,8 @@ const predefinedJokes = [
   "Comment fait un chien pour traverser une rivière ? Il aboie et prend le bateau !",
   "Pourquoi les poules ne traversent-elles jamais en ligne droite ? Parce qu'elles préfèrent faire des zigzags !",
   "Qu'est-ce qu'un chat qui fait du parachutisme ? Un chat qui a les poils en l'air !",
+
+  // Blagues nourriture
   "Pourquoi les pizzas sont-elles toujours en retard ? Parce qu'elles sont livrées à domicile !",
   "Qu'est-ce qu'un burger timide ? Un burger qui rougit quand on le regarde !",
   "Pourquoi les sushis sont-ils si calmes ? Parce qu'ils sont toujours bien roulés !",
@@ -19,6 +22,8 @@ const predefinedJokes = [
   "Comment fait un burger pour se défendre ? Il met de la moutarde !",
   "Pourquoi les frites sont-elles toujours en groupe ? Parce qu'elles sont meilleures ensemble !",
   "Qu'est-ce qu'une pizza qui fait du théâtre ? Une pizza qui joue la comédie !",
+
+  // Blagues technologie
   "Pourquoi le développeur a-t-il traversé la route ? Pour aller de l'autre côté (du code) !",
   "Qu'est-ce qu'un bug qui fait du sport ? Un bug qui court en boucle !",
   "Pourquoi JavaScript et moi on s'entend bien ? Parce qu'on a tous les deux des promesses !",
