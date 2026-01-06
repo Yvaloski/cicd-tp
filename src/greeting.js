@@ -1,19 +1,19 @@
 async function fetchJokeFromAPI() {
   try {
-    const response = await fetch('https://www.blagues-api.fr/api/random');
+    const response = await fetch('https://blague-api.vercel.app/api?mode=beauf');
     const data = await response.json();
 
     // Vérifier que la blague est valide
-    if (data && data.joke && data.answer) {
+    if (data && data.blague && data.reponse) {
       return {
-        joke: `${data.joke} ${data.answer}`,
+        joke: `${data.blague} ${data.reponse}`,
         source: 'api',
-        category: data.type || 'random'
+        category: 'beauf' // Cette API ne fournit qu'un seul type
       };
     }
     throw new Error('Blague invalide reçue de l\'API');
   } catch (error) {
-    console.error('Erreur API blagues-api.fr:', error);
+    console.error('Erreur API blague-api.vercel.app:', error);
     throw new Error('Impossible de récupérer une blague de l\'API');
   }
 }

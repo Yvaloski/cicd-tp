@@ -232,15 +232,12 @@
         <p class="subtitle">Une dose d'humour pour égayer votre journée</p>
 
         <div class="controls">
-            <button class="category-btn active" data-category="random">Aléatoire</button>
-            <button class="category-btn" data-category="animal">Animaux</button>
-            <button class="category-btn" data-category="food">Nourriture</button>
-            <button class="category-btn" data-category="tech">Technologie</button>
+            <button class="category-btn active" data-category="beauf">Blagues Beauf</button>
         </div>
 
         <div class="joke-card" id="jokeCard">
             <div class="loading" id="loading"></div>
-            <div class="joke-text" id="jokeText">Cliquez sur un bouton pour obtenir une blague !</div>
+            <div class="joke-text" id="jokeText">Cliquez sur le bouton pour obtenir une blague !</div>
             <div class="joke-meta" id="jokeMeta"></div>
         </div>
 
@@ -262,59 +259,10 @@
         const errorMessage = document.getElementById('errorMessage');
         const jokeCard = document.getElementById('jokeCard');
 
-        let currentCategory = 'random';
-
-        // Catégorisation des blagues (pour le filtrage côté client)
-        const jokeCategories = {
-            animal: [
-                "Pourquoi le poulet a-t-il traversé la route ? Pour prouver qu'il n'était pas une poule !",
-                "Que dit un poisson philosophe ? 'Je pense, donc je nage'",
-                "Pourquoi les canards sont toujours de bonne humeur ? Parce qu'ils ont toujours le sourire aux lèvres !",
-                "Comment appelle-t-on un chat qui fait du ski ? Un chat-pine !",
-                "Pourquoi les vaches regardent-elles toujours vers le sud ? Parce que le nord, c'est trop loin !",
-                "Qu'est-ce qu'un lapin qui fait du vélo ? Un lapin qui roule des mécaniques !",
-                "Pourquoi les chiens n'aiment pas les ordinateurs ? Parce qu'ils préfèrent les os !",
-                "Comment fait un chien pour traverser une rivière ? Il aboie et prend le bateau !",
-                "Pourquoi les poules ne traversent-elles jamais en ligne droite ? Parce qu'elles préfèrent faire des zigzags !",
-                "Qu'est-ce qu'un chat qui fait du parachutisme ? Un chat qui a les poils en l'air !"
-            ],
-            food: [
-                "Pourquoi les pizzas sont-elles toujours en retard ? Parce qu'elles sont livrées à domicile !",
-                "Qu'est-ce qu'un burger timide ? Un burger qui rougit quand on le regarde !",
-                "Pourquoi les sushis sont-ils si calmes ? Parce qu'ils sont toujours bien roulés !",
-                "Comment appelle-t-on un croissant qui fait du sport ? Un croissant qui court !",
-                "Pourquoi les pâtes sont-elles toujours en retard ? Parce qu'elles sont toujours al dente !",
-                "Qu'est-ce qu'un taco qui fait de la musique ? Un taco qui a du son !",
-                "Pourquoi les glaces sont-elles toujours de bonne humeur ? Parce qu'elles sont toujours cool !",
-                "Comment fait un burger pour se défendre ? Il met de la moutarde !",
-                "Pourquoi les frites sont-elles toujours en groupe ? Parce qu'elles sont meilleures ensemble !",
-                "Qu'est-ce qu'une pizza qui fait du théâtre ? Une pizza qui joue la comédie !"
-            ],
-            tech: [
-                "Pourquoi le développeur a-t-il traversé la route ? Pour aller de l'autre côté (du code) !",
-                "Qu'est-ce qu'un bug qui fait du sport ? Un bug qui court en boucle !",
-                "Pourquoi JavaScript et moi on s'entend bien ? Parce qu'on a tous les deux des promesses !",
-                "Comment appelle-t-on un développeur qui fait du jardinage ? Un développeur qui plante des bugs !",
-                "Pourquoi les ordinateurs n'aiment-ils pas l'hiver ? Parce qu'ils ont peur des windows !",
-                "Qu'est-ce qu'un programmeur qui fait de la musique ? Un programmeur qui a du code !",
-                "Pourquoi les développeurs préfèrent-ils le noir ? Parce que la lumière attire les bugs !",
-                "Comment fait un développeur pour se détendre ? Il fait du debug !",
-                "Pourquoi les serveurs sont-ils toujours en retard ? Parce qu'ils ont trop de requêtes !",
-                "Qu'est-ce qu'un algorithme qui fait du sport ? Un algorithme qui court en O(n) !"
-            ]
-        };
-
-        // Sélectionner une blague aléatoire
-        function getRandomJokeFromCategory(category) {
-            if (category === 'random') {
-                const allJokes = [...jokeCategories.animal, ...jokeCategories.food, ...jokeCategories.tech];
-                return allJokes[Math.floor(Math.random() * allJokes.length)];
-            }
-            return jokeCategories[category][Math.floor(Math.random() * jokeCategories[category].length)];
-        }
+        let currentCategory = 'beauf';
 
         // Afficher une blague
-        function displayJoke(joke, category, source = 'local') {
+        function displayJoke(joke, category, source = 'api') {
             // Réinitialiser l'animation en supprimant et ajoutant la classe
             jokeCard.style.animation = 'none';
             jokeCard.offsetHeight; // Déclencher un reflow
@@ -322,7 +270,7 @@
 
             jokeText.textContent = joke;
             jokeMeta.innerHTML = `Catégorie: ${category} • ${new Date().toLocaleTimeString()}` +
-                                `<span class="source-badge">${source === 'api' ? 'API' : 'Locale'}</span>`;
+                                `<span class="source-badge">${source}</span>`;
             loading.style.display = 'none';
             errorMessage.textContent = '';
         }
@@ -342,18 +290,14 @@
 
             try {
                 const response = await fetch(`/joke?type=${category}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    displayJoke(data.joke, category, data.source || 'local');
-                } else {
-                    // Fallback sur les données locales
-                    const joke = getRandomJokeFromCategory(category);
-                    displayJoke(joke, category, 'local');
+                if (!response.ok) {
+                    throw new Error(`Erreur ${response.status}: ${response.statusText}`);
                 }
+                const data = await response.json();
+                displayJoke(data.joke, data.category || category, data.source || 'api');
             } catch (error) {
-                // En cas d'erreur réseau, utiliser les données locales
-                const joke = getRandomJokeFromCategory(category);
-                displayJoke(joke, category, 'local');
+                console.error("Erreur:", error);
+                displayError(`Impossible de charger la blague: ${error.message}. Veuillez réessayer.`);
             }
         }
 
@@ -372,9 +316,9 @@
             fetchJoke(currentCategory);
         });
 
-        // Charger une blague aléatoire au démarrage
+        // Charger une blague au démarrage
         window.addEventListener('DOMContentLoaded', () => {
-            fetchJoke('random');
+            fetchJoke('beauf');
         });
     </script>
 </body>
