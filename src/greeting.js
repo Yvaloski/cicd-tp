@@ -6,23 +6,29 @@ function generateJoke(type = 'random') {
     'animal': () => {
       const animals = ['chien', 'chat', 'poulet', 'vache', 'canard', 'lapin'];
       const animal = animals[Math.floor(Math.random() * animals.length)];
-      const verbs = ['traversé', 'couru', 'sauté', 'nagé'];
-      const verb = verbs[Math.floor(Math.random() * verbs.length)];
-      return `Pourquoi le ${animal} a ${verb} la route ? Pour prouver qu'il n'était pas un poulet !`;
+      const actions = ['traverse', 'court', 'saute', 'nage'];
+      const action = actions[Math.floor(Math.random() * actions.length)];
+      const reasons = ['pour aller chez le vétérinaire', 'pour échapper au fermier', 'parce qu\'il a vu un os', 'pour rejoindre ses amis'];
+      const reason = reasons[Math.floor(Math.random() * reasons.length)];
+      return `Pourquoi le ${animal} ${action}-t-il la route ? ${reason} !`;
     },
     'food': () => {
       const foods = ['pizza', 'pâtes', 'burger', 'sushi', 'taco', 'croissant'];
       const food = foods[Math.floor(Math.random() * foods.length)];
       const problems = ['brûlé', 'trop cuit', 'gelé', 'volé', 'perdu'];
       const problem = problems[Math.floor(Math.random() * problems.length)];
-      return `Qu'est-ce qui est pire qu'un ${food} ${problem} ? Un ${food} qui vous ${problem} !`;
+      const reactions = ['pleurer', 'crier', 's\'énerver', 'appeler le livreur', 'demander un remboursement'];
+      const reaction = reactions[Math.floor(Math.random() * reactions.length)];
+      return `Qu'est-ce qui fait ${reaction} un ${food} ${problem} ? Un cuisinier qui a oublié de régler le four !`;
     },
     'tech': () => {
       const techs = ['JavaScript', 'Python', 'Java', 'C++', 'Ruby'];
       const tech = techs[Math.floor(Math.random() * techs.length)];
       const errors = ['erreur 404', 'bug', 'segfault', 'memory leak', 'race condition'];
       const error = errors[Math.floor(Math.random() * errors.length)];
-      return `Pourquoi le développeur ${tech} a pleuré ? À cause d'une ${error} dans son code !`;
+      const solutions = ['redémarrer l\'ordinateur', 'relire le code', 'boire un café', 'appeler un collègue', 'pleurer dans un coin'];
+      const solution = solutions[Math.floor(Math.random() * solutions.length)];
+      return `Comment résoudre une ${error} en ${tech} ? En ${solution} !`;
     },
     'random': () => {
       const templates = ['animal', 'food', 'tech'];
