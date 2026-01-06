@@ -41,7 +41,7 @@ app.get("/joke", async (req, res) => {
       joke: joke,
       type: type,
       timestamp: new Date().toISOString(),
-      source: joke.startsWith('Comment') || joke.startsWith('Pourquoi') ? 'api' : 'predefined'
+      source: joke.includes('?') || joke.includes('!') ? 'api' : 'predefined'
     });
   } catch (error) {
     res.status(500).json({
