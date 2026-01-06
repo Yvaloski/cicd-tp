@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const { getGreeting, getRandomJoke, getJoke } = require("./greeting");
+const { getGreeting, getJoke } = require("./greeting");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
