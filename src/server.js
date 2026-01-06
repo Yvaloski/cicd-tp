@@ -36,12 +36,13 @@ app.post("/hello", (req, res) => {
 app.get("/joke", async (req, res) => {
   try {
     const type = req.query.type || 'random';
-    const joke = await getJoke();
+    const jokeData = await getJoke();
     res.json({
-      joke: joke,
+      joke: jokeData.joke,
       type: type,
+      category: jokeData.category,
       timestamp: new Date().toISOString(),
-      source: joke.includes('?') || joke.includes('!') ? 'api' : 'predefined'
+      source: jokeData.source
     });
   } catch (error) {
     res.status(500).json({

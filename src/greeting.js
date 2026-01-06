@@ -43,7 +43,11 @@ async function fetchJokeFromAPI() {
 
     // Vérifier que la blague est valide
     if (data && data.joke && data.answer) {
-      return `${data.joke} ${data.answer}`;
+      return {
+        joke: `${data.joke} ${data.answer}`,
+        source: 'api',
+        category: data.type || 'random'
+      };
     }
     return null;
   } catch (error) {
@@ -53,12 +57,17 @@ async function fetchJokeFromAPI() {
 }
 
 function getRandomJoke() {
-  return predefinedJokes[Math.floor(Math.random() * predefinedJokes.length)];
+  const joke = predefinedJokes[Math.floor(Math.random() * predefinedJokes.length)];
+  return {
+    joke: joke,
+    source: 'predefined',
+    category: 'random'
+  };
 }
 
 async function getJoke() {
-  // 30% de chance d'utiliser l'API, sinon utiliser les blagues prédéfinies
-  if (Math.random() < 0.3) {
+  // 70% de chance d'utiliser l'API, sinon utiliser les blagues prédéfinies
+  if (Math.random() < 0.7) {
     const apiJoke = await fetchJokeFromAPI();
     if (apiJoke) {
       return apiJoke;
@@ -71,7 +80,7 @@ function getGreeting(name) {
   if (name && name.toLowerCase().includes('blague')) {
     return {
       message: "Voici une blague aléatoire:",
-      joke: getRandomJoke()
+      joke: getRandomJoke().joke
     };
   }
   return name ? `Hey ${name}! Dis "blague" pour une vanne !` : "Hey world!";
