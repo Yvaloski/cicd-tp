@@ -3,11 +3,9 @@ module.exports = {
     es2021: true,
     node: true,
     jest: true,
+    "jest-allure/globals": true
   },
   extends: ["eslint:recommended"],
-  globals: {
-    allure: "readonly"  // Ajout pour éviter les warnings ESLint
-  },
   rules: {
     "no-unused-vars": "warn",
     "prefer-const": "error",
