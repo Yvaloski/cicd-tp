@@ -60,7 +60,7 @@ jobs:
           retention-days: 30
 
       - name: Push to Grafana Cloud
-        if: env.GRAFANA_CLOUD_URL != '' && env.GRAFANA_SERVICE_ACCOUNT_TOKEN != ''
+        if: env.GRAFANA_URL != '' && env.GRAFANA_SERVICE_ACCOUNT_TOKEN != ''
         run: |
           curl -X POST \
             -H "Authorization: Bearer ${{ secrets.GRAFANA_SERVICE_ACCOUNT_TOKEN }}" \
