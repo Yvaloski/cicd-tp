@@ -1,6 +1,6 @@
 const request = require("supertest");
 const app = require("../../src/server");
-const { allure } = require('@allure-framework/allure-js');
+const allure = require("allure-js-commons");
 
 describe("GET /hello", () => {
   it("should return Hey world", async () => {
@@ -57,8 +57,8 @@ describe("POST /hello", () => {
     allure.story("Header-based greeting");
     allure.description("Test avec un nom dans l'en-tête");
     const res = await request(app)
-      .post("/hello")
-      .set("x-name", "Bob");
+        .post("/hello")
+        .set("x-name", "Bob");
     expect(res.statusCode).toBe(200);
     expect(res.text).toBe("Hey Bob! Dis \"blague\" pour une vanne !");
   });
@@ -68,8 +68,8 @@ describe("POST /hello", () => {
     allure.story("Joke request via header");
     allure.description("Test de la fonctionnalité de blague via en-tête");
     const res = await request(app)
-      .post("/hello")
-      .set("x-name", "blague");
+        .post("/hello")
+        .set("x-name", "blague");
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("message", "Voici une blague aléatoire:");
     expect(res.body).toHaveProperty("joke");
@@ -80,7 +80,7 @@ describe("POST /hello", () => {
     allure.story("Missing header");
     allure.description("Test sans en-tête x-name");
     const res = await request(app)
-      .post("/hello");
+        .post("/hello");
     expect(res.statusCode).toBe(200);
     expect(res.text).toBe("Hey world!");
   });
@@ -90,8 +90,8 @@ describe("POST /hello", () => {
     allure.story("Empty header");
     allure.description("Test avec un en-tête x-name vide");
     const res = await request(app)
-      .post("/hello")
-      .set("x-name", "");
+        .post("/hello")
+        .set("x-name", "");
     expect(res.statusCode).toBe(200);
     expect(res.text).toBe("Hey world!");
   });
