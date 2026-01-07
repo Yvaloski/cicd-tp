@@ -1,0 +1,29 @@
+{
+  "title": "GitHub Actions Metrics",
+  "panels": [
+    {
+      "title": "Test Duration",
+      "type": "graph",
+      "targets": [
+        {
+          "expr": "test_duration_seconds",
+          "legendFormat": "Duration"
+        }
+      ]
+    },
+    {
+      "title": "Test Results",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "tests_passed",
+          "legendFormat": "Passed"
+        },
+        {
+          "expr": "tests_failed",
+          "legendFormat": "Failed"
+        }
+      ]
+    }
+  ]
+}

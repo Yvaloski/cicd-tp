@@ -79,3 +79,37 @@ jobs:
           echo "## 📊 Allure Test Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "🔗 Report URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-report/${{ github.run_number }}/" >> $GITHUB_STEP_SUMMARY
+
+      - name: Generate Test Metrics
+        if: always()
+        run: |
+          # Créer un fichier de métriques basiques
+          echo "# HELP test_duration_seconds Durée des tests" > test-metrics.prom
+          echo "# TYPE test_duration_seconds gauge" >> test-metrics.prom
+          echo "test_duration_seconds 45.2" >> test-metrics.prom  # Valeur d'exemple
+          echo "# HELP tests_passed Tests réussis" >> test-metrics.prom
+          echo "# TYPE tests_passed counter" >> test-metrics.prom
+          echo "tests_passed 8" >> test-metrics.prom  # Valeur d'exemple
+          echo "# HELP tests_failed Tests échoués" >> test-metrics.prom
+          echo "# TYPE tests_failed counter" >> test-metrics.prom
+          echo "tests_failed 2" >> test-metrics.prom  # Valeur d'exemple
+
+      - name: Upload Test Metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-metrics
+          path: test-metrics.prom
+          retention-days: 30
+
+      - name: Send to Grafana Cloud
+        if: env.GRAFANA_CLOUD_URL != '' && env.GRAFANA_API_KEY != ''
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.GRAFANA_API_KEY }}" \
+            -H "Content-Type: text/plain" \
+            --data-binary @test-metrics.prom \
+            "${{ secrets.GRAFANA_CLOUD_URL }}/api/prom/push"
+        env:
+          GRAFANA_CLOUD_URL: ${{ secrets.GRAFANA_CLOUD_URL }}
+          GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
