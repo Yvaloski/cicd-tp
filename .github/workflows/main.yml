@@ -45,6 +45,18 @@ jobs:
         if: always()
         run: allure generate allure-results -o allure-report --clean
 
+      - name: Zip Allure Report
+        if: always()
+        run: zip -r allure-report.zip allure-report
+
+      - name: Upload Allure Report (ZIP)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-zip
+          path: allure-report.zip
+          retention-days: 30
+
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v4
