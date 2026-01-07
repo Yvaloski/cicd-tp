@@ -23,8 +23,10 @@ jobs:
           node-version-file: ".nvmrc"
       - run: npm ci
       - run: npm test
-      - name: Install Allure
-        run: npm install -g allure-commandline
+      - name: Install Allure Commandline
+        uses: simple-elf/allure-report-action@v1.7
+        with:
+          allure_version: 2.36.0
       - name: Generate Allure Report
         run: allure generate allure-results -o allure-report --clean
       - name: Upload Allure Report
