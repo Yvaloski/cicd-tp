@@ -1,5 +1,6 @@
 const axios = require("axios");
 const app = require("../../src/server");
+const allure = require('allure-commandline');
 let server;
 let baseURL;
 

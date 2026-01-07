@@ -1,5 +1,6 @@
 const request = require("supertest");
 const app = require("../../src/server");
+const allure = require('allure-commandline');
 
 describe("GET /hello", () => {
   it("should return Hey world", async () => {
