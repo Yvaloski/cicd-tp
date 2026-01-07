@@ -1,6 +1,6 @@
 const axios = require("axios");
 const app = require("../../src/server");
-const { allure } = require('@allure-framework/allure-js');
+const allure = require("allure-js-commons");
 let server;
 let baseURL;
 

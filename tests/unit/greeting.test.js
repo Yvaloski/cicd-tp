@@ -1,5 +1,5 @@
 const { getGreeting, getJoke } = require("../../src/greeting");
-const { allure } = require('@allure-framework/allure-js');
+const allure = require("allure-js-commons");
 
 describe("getGreeting", () => {
   it("returns the hey world message", () => {
