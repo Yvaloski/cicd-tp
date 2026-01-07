@@ -14,8 +14,6 @@
     "supertest": "^6.3.0"
   },
   "devDependencies": {
-    "@allure-framework/allure-js": "^3.0.0",
-    "@allure-framework/allure-jest": "^3.0.0",
     "eslint": "^8.0.0",
     "jest": "^29.0.0"
   },
