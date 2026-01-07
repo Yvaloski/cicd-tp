@@ -113,3 +113,42 @@ jobs:
         env:
           GRAFANA_CLOUD_URL: ${{ secrets.GRAFANA_CLOUD_URL }}
           GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }}
+
+  prometheus-metrics:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install Prometheus Exporter
+        run: npm install -g github-actions-prometheus-exporter
+
+      - name: Export Metrics
+        run: |
+          github-actions-prometheus-exporter \
+            --workflow-run-id=${{ github.run_id }} \
+            --github-token=${{ secrets.GITHUB_TOKEN }} \
+            --output-file=metrics.prom
+
+      - name: Upload Metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: prometheus-metrics
+          path: metrics.prom
+          retention-days: 30
+
+      - name: Push to Prometheus (if available)
+        if: env.PROMETHEUS_PUSHGATEWAY_URL != ''
+        run: |
+          curl -X POST \
+            -H "Content-Type: text/plain" \
+            --data-binary @metrics.prom \
+            "${{ secrets.PROMETHEUS_PUSHGATEWAY_URL }}/metrics/job/github-actions"
+        env:
+          PROMETHEUS_PUSHGATEWAY_URL: ${{ secrets.PROMETHEUS_PUSHGATEWAY_URL }}
