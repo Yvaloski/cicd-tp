@@ -4,6 +4,11 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+
+permissions:
+  pull-requests: write
+  checks: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -14,6 +19,7 @@ jobs:
           node-version-file: ".nvmrc"
       - run: npm ci
       - run: npm run lint
+
   tests:
     runs-on: ubuntu-latest
     steps:
@@ -22,19 +28,26 @@ jobs:
         with:
           node-version-file: ".nvmrc"
       - run: npm ci
-      - run: npm test
-      - name: Install Allure Commandline
-        uses: simple-elf/allure-report-action@v1.7
-        with:
-          allure_version: 2.36.0
+
+      - name: Run tests with Allure 3
+        run: npx allure run -- jest
+
       - name: Generate Allure Report
-        run: allure generate allure-results -o allure-report --clean
+        run: npx allure generate allure-results -o allure-report --clean
+
+      - name: Allure Report Action
+        uses: allure-framework/allure-action@v0
+        with:
+          report-directory: "./allure-report"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload Allure Report
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: allure-report
-      - name: Deploy Allure Report to GitHub Pages
+
+      - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3
         with:
