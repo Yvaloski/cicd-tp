@@ -26,9 +26,16 @@ jobs:
       - name: Install Allure
         run: npm install -g allure-commandline
       - name: Generate Allure Report
-        run: allure generate allure-results -o allure-report
+        run: allure generate allure-results -o allure-report --clean
       - name: Upload Allure Report
         uses: actions/upload-artifact@v3
         with:
           name: allure-report
           path: allure-report
+      - name: Deploy Allure Report to GitHub Pages
+        if: github.ref == 'refs/heads/master'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          destination_dir: allure-report
