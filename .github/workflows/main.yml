@@ -30,7 +30,7 @@ jobs:
       - run: npm ci
 
       - name: Run tests with Allure 3
-        run: npx allure run -- jest
+        run: npx allure run -- npm run test
 
       - name: Generate Allure Report
         run: npx allure generate allure-results -o allure-report --clean
