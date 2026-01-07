@@ -68,5 +68,5 @@ jobs:
             --data-binary @metrics.prom \
             "${{ secrets.GRAFANA_CLOUD_URL }}/api/prom/push"
         env:
-          GRAFANA_CLOUD_URL: ${{ secrets.GRAFANA_CLOUD_URL }}
+          GRAFANA_URL: ${{ secrets.GRAFANA_CLOUD_URL }}
           GRAFANA_SERVICE_ACCOUNT_TOKEN: ${{ secrets.GRAFANA_SERVICE_ACCOUNT_TOKEN }}
