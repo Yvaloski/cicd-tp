@@ -6,3 +6,7 @@ dist/
 
 # test coverage output:
 coverage/
+
+# Allure reports:
+allure-results/
+allure-report/
