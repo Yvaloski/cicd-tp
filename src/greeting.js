@@ -23,13 +23,18 @@ async function getJoke() {
 }
 
 function getGreeting(name) {
-  if (name && name.toLowerCase().includes('blague')) {
+  // Vérifier si le nom est vide ou contient uniquement des espaces
+  if (!name || typeof name !== 'string' || name.trim() === '') {
+    return "Hey world!";
+  }
+
+  if (name.toLowerCase().includes('blague')) {
     return {
       message: "Voici une blague aléatoire:",
       joke: "Une blague de l'API sera générée"
     };
   }
-  return name ? `Hey ${name}! Dis "blague" pour une vanne !` : "Hey world!";
+  return `Hey ${name}! Dis "blague" pour une vanne !`;
 }
 
 module.exports = {
