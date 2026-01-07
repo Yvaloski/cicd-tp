@@ -1,5 +1,6 @@
 const axios = require("axios");
 const app = require("../../src/server");
+const { allure } = require('jest-allure');
 let server;
 let baseURL;
 
@@ -17,18 +18,24 @@ afterAll((done) => {
 
 describe("E2E GET /hello", () => {
   it("responds with Hey world", async () => {
+    allure.feature("Greeting API");
+    allure.story("Basic greeting");
     const res = await axios.get(`${baseURL}/hello`);
     expect(res.status).toBe(200);
     expect(res.data).toBe("Hey world!");
   });
 
   it("responds with personalized greeting", async () => {
+    allure.feature("Greeting API");
+    allure.story("Personalized greeting");
     const res = await axios.get(`${baseURL}/hello/Alice`);
     expect(res.status).toBe(200);
     expect(res.data).toBe("Hey Alice! Dis \"blague\" pour une vanne !");
   });
 
   it("responds with a joke when requested", async () => {
+    allure.feature("Greeting API");
+    allure.story("Joke request");
     const res = await axios.get(`${baseURL}/hello/blague`);
     expect(res.status).toBe(200);
     expect(res.data).toHaveProperty("message");
@@ -36,6 +43,8 @@ describe("E2E GET /hello", () => {
   });
 
   it("handles server errors gracefully", async () => {
+    allure.feature("Greeting API");
+    allure.story("Error handling");
     try {
       await axios.get(`${baseURL}/nonexistent`);
     } catch (error) {
@@ -46,6 +55,8 @@ describe("E2E GET /hello", () => {
 
 describe("E2E POST /hello", () => {
   it("responds with personalized greeting from header", async () => {
+    allure.feature("Greeting API");
+    allure.story("Header-based greeting");
     const res = await axios.post(`${baseURL}/hello`, {}, {
       headers: { "x-name": "Bob" }
     });
@@ -56,6 +67,8 @@ describe("E2E POST /hello", () => {
 
 describe("E2E GET /joke", () => {
   it("responds with a random joke from API", async () => {
+    allure.feature("Joke API");
+    allure.story("Basic joke endpoint");
     const res = await axios.get(`${baseURL}/joke`);
     expect(res.status).toBe(200);
     expect(res.data).toHaveProperty("joke");
@@ -65,6 +78,8 @@ describe("E2E GET /joke", () => {
   });
 
   it("responds with different jokes on multiple calls", async () => {
+    allure.feature("Joke API");
+    allure.story("Randomness");
     const responses = await Promise.all([
       axios.get(`${baseURL}/joke`),
       axios.get(`${baseURL}/joke`),
@@ -76,6 +91,8 @@ describe("E2E GET /joke", () => {
   });
 
   it("handles network errors gracefully", async () => {
+    allure.feature("Joke API");
+    allure.story("Network error handling");
     try {
       await axios.get(`${baseURL}/joke`, { timeout: 1 });
     } catch (error) {
@@ -86,6 +103,8 @@ describe("E2E GET /joke", () => {
 
 describe("E2E Error Handling", () => {
   it("handles invalid routes", async () => {
+    allure.feature("Error Handling");
+    allure.story("Invalid routes");
     try {
       await axios.get(`${baseURL}/invalid-route`);
     } catch (error) {
@@ -94,10 +113,11 @@ describe("E2E Error Handling", () => {
   });
 
   it("handles malformed requests", async () => {
+    allure.feature("Error Handling");
+    allure.story("Malformed requests");
     try {
       await axios.post(`${baseURL}/hello`, { invalid: "data" });
     } catch (error) {
-      // Should still respond with 200 as we're not validating the body
       expect(error.response.status).toBe(200);
     }
   });
